@@ -28,16 +28,16 @@ export class TrackService {
     }
 
     async getAll(count = 10, offset = 0, search): Promise<Track[]> {
-        const tracks = await this.trackModel.find({name: {$regex: new RegExp(search)}}).skip(offset).limit(count)
+        const tracks = await this.trackModel.find({name: {$regex: new RegExp(search, 'i')}}).skip(offset).limit(count)
         return tracks
     }
 
-    async search(search: string): Promise<Track[]> {
-        console.log('searcg', search);
+    // async search(search: string): Promise<Track[]> {
+    //     console.log('searcg', search);
         
-        const tracks = await this.trackModel.find({name: {$regex: new RegExp(search)}})
-        return tracks
-    }
+    //     const tracks = await this.trackModel.find({name: {$regex: new RegExp(search, 'i')}})
+    //     return tracks
+    // }
 
     async delete(id: ObjectId): Promise<ObjectId> {
         const track = await this.trackModel.findByIdAndDelete(id)
