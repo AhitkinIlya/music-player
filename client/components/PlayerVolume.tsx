@@ -11,12 +11,12 @@ const PlayerVolume: React.FC<PlayerVolume> = ({right, left, onChange}) => {
         <div className='flex ml-3'>
             <input
                 type='range'
-                min={left}
+                min={0}
                 max={right}
                 value={left}
                 onChange={onChange}
             />
-            <div className='ml-1'>{left} / {right}</div>
+            <div className='ml-1'>{(left / right * 100).toFixed(0)}%</div>
         </div>
     )
 }

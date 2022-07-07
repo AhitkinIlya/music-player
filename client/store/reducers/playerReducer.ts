@@ -3,7 +3,7 @@ import { PlayerState, PlayerAction, PlayerActionType } from "../../types/player"
 const initialState: PlayerState = {
     duration: 0,
     currentTime: 0,
-    volume: 0,
+    volume: 50,
     pause: true,
     active: null
 }
