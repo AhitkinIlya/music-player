@@ -9,6 +9,7 @@ const initialState: PlayerState = {
 }
 
 export const playerReducer = (state = initialState, action: PlayerAction): PlayerState => {
+    
     switch (action.type) {
         case PlayerActionType.PAUSE:
             return {...state, pause: true}

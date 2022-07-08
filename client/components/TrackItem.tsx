@@ -1,33 +1,54 @@
 import React from 'react'
+import { connect } from "react-redux"
 import { ITrack } from '../types/track'
 import PauseIcon from './icons/PauseIcon'
 import PlayIcon from './icons/PlayIcon'
 import TrashIcon from './icons/TrashIcon'
 import { useRouter } from '../node_modules/next/router'
 import { useActions } from './../hooks/useActions';
+import { deleteTrack } from '../store/actions-creators/track'
+import { useTypedSelector } from './../hooks/useTypedSelector';
 
 interface TrackItemProps {
     track: ITrack;
-    active?: boolean;
 }
 
-const TrackItem: React.FC<TrackItemProps> = ({track, active = false}) => {
+const TrackItem: React.FC<TrackItemProps> = ({track}) => {
+    console.log('track', track);
+    
     const router = useRouter()
-    const { playTrack, pauseTrack, setActiveTrack } = useActions()
-
-    const play = (e) => {
+    const { playTrack, pauseTrack, setActiveTrack, deleteTrack } = useActions()
+    const { pause, active } = useTypedSelector(state => state.player)
+    
+    const play = async (e) => {
         e.stopPropagation()
-        setActiveTrack(track)
-        playTrack()
+        if (track._id !== active?._id) {
+            setActiveTrack(track)
+        }
+        if (pause) {
+            playTrack()
+        } else {
+            pauseTrack()
+        }
+    }
+
+    const deleteItem = (e, id) => {
+        e.stopPropagation()
+        deleteTrack(id)
+    }
+
+    const toTrackInfo = (e) => {
+        e.stopPropagation()
+        router.push('/tracks/' + track._id)
     }
 
     return (
         <div 
             className='flex items-center p-4 rounded font-medium shadow-[0_2px_7px_-2px_rgb(0,0,0,0.3)]'
-            onClick={() => router.push('/tracks/' + track._id)}
+            onClick={(e) => toTrackInfo(e)}
         >
             <div onClick={play}>
-                {active 
+                {track._id === active?._id && !pause
                     ? <PauseIcon />
                     : <PlayIcon />
                 }
@@ -37,8 +58,8 @@ const TrackItem: React.FC<TrackItemProps> = ({track, active = false}) => {
                 <div>{track.name}</div>
                 <div className='text-xs text-gray-500'>{track.artist}</div>
             </div>
-            {active && <div>01:35 / 03:15</div>}
-            <div onClick={e => e.stopPropagation()} className='ml-auto'>
+            <div>01:35 / 03:15</div>
+            <div onClick={(e) => deleteItem(e, track._id)} className='ml-auto'>
                 <TrashIcon />
             </div>
         </div>

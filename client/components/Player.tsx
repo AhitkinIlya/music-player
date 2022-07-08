@@ -11,16 +11,6 @@ import { ITrack } from '../types/track'
 let audio;
 
 const Player = () => {
-    const track: ITrack = {
-        _id: '1', 
-        name: 'Трек 1', 
-        artist: 'lil pump', 
-        text: 'essketit', 
-        listens: 100, 
-        audio: 'http://localhost:5000/audio/e57edca6-8399-42c2-aabe-5dd6eb89a8e7.mp3', 
-        picture: 'http://localhost:5000/image/6932f20c-cc98-4201-8abd-97e7ce07e742.jpg',
-        comments: []
-    }
     const { pause, volume, active, duration, currentTime } = useTypedSelector(state => state.player)
     const { pauseTrack, playTrack, setVolume, setCurrentTime, setDuration, setActiveTrack } = useActions()
 
@@ -28,11 +18,20 @@ const Player = () => {
         if (!audio) {
             audio = new Audio()
             setAudio()
+            play()
         } else {
             setAudio()
             play()
         }
     }, [active])
+
+    useEffect(() => {
+        if (!pause) {
+            audio.play()
+        } else {
+            audio.pause()
+        }
+    }, [pause])
 
     const setAudio = () => {
         if (active) {
@@ -50,10 +49,8 @@ const Player = () => {
     const play = () => {
         if (pause) {
             playTrack()
-            audio.play()
         } else {
             pauseTrack()
-            audio.pause()
         }
     }
 

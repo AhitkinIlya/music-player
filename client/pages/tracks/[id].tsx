@@ -81,7 +81,7 @@ const Track = ({serverTrack}) => {
                     </button>
                 </div>
                 <div>
-                    {track.comments.map(comment => (
+                    {track?.comments?.map(comment => (
                         <div key={comment._id}>
                             <div>Автор - {comment.username}</div>
                             <div>Комментарий - {comment.text}</div>

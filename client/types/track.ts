@@ -23,7 +23,8 @@ export interface TrackState {
 
 export enum TrackActionTypes {
     FETCH_TRACKS = 'FETCH_TRACKS',
-    FETCH_TRACKS_ERROR = 'FETCH_TRACKS_ERROR'
+    FETCH_TRACKS_ERROR = 'FETCH_TRACKS_ERROR',
+    DELETE_TRACK = 'DELETE_TRACK',
 }
 
 interface FetchTracksAction {
@@ -36,4 +37,9 @@ interface FetchTracksErrorAction {
     payload: string;
 }
 
-export type TrackAction = FetchTracksAction | FetchTracksErrorAction
+interface DeleteTrackAction {
+    type: TrackActionTypes.DELETE_TRACK;
+    payload: string;
+}
+
+export type TrackAction = FetchTracksAction | FetchTracksErrorAction | DeleteTrackAction
