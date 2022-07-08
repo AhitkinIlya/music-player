@@ -2,15 +2,33 @@ import React, { useState } from 'react'
 import MainLayout from '../../layout/MainLayout'
 import StepDownloaing from '../../components/StepDownloaing'
 import FileUpload from '../../components/FileUpload'
+import { useInput } from './../../hooks/useInput';
+import axios from 'axios'
+import { useRouter } from 'next/router';
 
 const create = () => {
     const [ activeStep, setActiveStep ] = useState(0)
     const [ picture, setPicture] = useState(null)
     const [ audio, setAudio] = useState(null)
+    const nameTrack = useInput('')
+    const nameArtist = useInput('')
+    const textTrack = useInput('')
+    const router = useRouter()
 
     const next = () => {
-        if (activeStep !== 3) {
+        if (activeStep !== 2) {
             setActiveStep(prev => prev + 1)
+        } else {
+            const formData = new FormData()
+            formData.append('name', nameTrack.value)
+            formData.append('artist', nameArtist.value)
+            formData.append('text', textTrack.value)
+            formData.append('picture', picture)
+            formData.append('audio', audio)
+            
+            axios.post('http://localhost:5000/tracks', formData)
+                .then(response => router.push(('/tracks')))
+                .catch(e => console.log('e', e))
         }
     }
 
@@ -27,6 +45,7 @@ const create = () => {
                             <label htmlFor="nameTrack" className="block text-sm font-medium text-gray-700">Назвине трека</label>
                             <div className="mt-1 relative rounded-md border-lime-700">
                                 <input 
+                                    {...nameTrack}
                                     type="text" 
                                     name="nameTrack" 
                                     id="nameTrack"
@@ -36,7 +55,8 @@ const create = () => {
                         <div className='mt-5'>
                             <label htmlFor="nameArtist" className="block text-sm font-medium text-gray-700">Имя исполинтеля</label>
                             <div className="mt-1 relative rounded-md border-lime-700">
-                                <input 
+                                <input
+                                    {...nameArtist}
                                     type="text" 
                                     name="nameArtist" 
                                     id="nameArtist"
@@ -47,6 +67,7 @@ const create = () => {
                             <label htmlFor="textTrack" className="block text-sm font-medium text-gray-700">Текст трека</label>
                             <div className="mt-1 relative rounded-md border-lime-700">
                                 <textarea
+                                    {...textTrack}
                                     rows={3}
                                     name="textTrack" 
                                     id="textTrack"

@@ -32,7 +32,7 @@ const TrackItem: React.FC<TrackItemProps> = ({track, active = false}) => {
                     : <PlayIcon />
                 }
             </div>
-            <img width={70} height={70} src={track.picture} />
+            <img width={70} height={70} src={'http://localhost:5000/' +track.picture} />
             <div className='container flex flex-col w-200'>
                 <div>{track.name}</div>
                 <div className='text-xs text-gray-500'>{track.artist}</div>

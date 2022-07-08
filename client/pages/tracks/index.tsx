@@ -1,26 +1,37 @@
-import React from 'react'
+import React, { useState } from 'react'
 import MainLayout from '../../layout/MainLayout'
 import { useRouter } from '../../node_modules/next/router'
-import { ITrack } from '../../types/track'
 import TrackList from '../../components/TrackList'
+import { useTypedSelector } from './../../hooks/useTypedSelector';
+import { fetchTracks } from './../../store/actions-creators/track';
+import { NextThunkDispatch, wrapper } from '../../store/index'
+import { useDispatch } from 'react-redux';
 
 const Index = () => {
     const router = useRouter()
-    const tracks: ITrack[] =[
-        {
-            _id: '1', 
-            name: 'Трек 1', 
-            artist: 'lil pump', 
-            text: 'essketit', 
-            listens: 100, 
-            audio: 'http://localhost:5000/audio/e57edca6-8399-42c2-aabe-5dd6eb89a8e7.mp3', 
-            picture: 'http://localhost:5000/image/6932f20c-cc98-4201-8abd-97e7ce07e742.jpg',
-            comments: []
+    const { tracks, error } = useTypedSelector(state => state.track)
+    const [ query, setQuery ] = useState<string>('')
+    const dispatch = useDispatch() as NextThunkDispatch
+    const [ timer, setTimer ] = useState(null)
+
+    const search = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        setQuery(e.target.value)
+        if (timer) {
+            clearTimeout(timer)
         }
-    ]
+        setTimer(setTimeout(async () => {
+            await dispatch(await fetchTracks(e.target.value))
+        }, 500))
+    }
+
+    if (error) {
+        return <MainLayout>
+            <h1>{error}</h1>
+        </MainLayout>
+    }
 
     return (
-        <MainLayout>
+        <MainLayout title={'Список треков - музылькая площадка'}>
             <div className='container justify-center'>
                 <div className='w-900 shadow-[0_2px_7px_-2px_rgb(0,0,0,0.3)] rounded'>
                     <div className='p-12'>
@@ -34,6 +45,10 @@ const Index = () => {
                             </button>
                         </div>
                     </div>
+                    <input
+                        value={query}
+                        onChange={search}
+                    />
                     <TrackList tracks={tracks} />
                 </div>
             </div>
@@ -42,3 +57,8 @@ const Index = () => {
 }
 
 export default Index
+
+export const getServerSideProps = wrapper.getServerSideProps(( store ) => async ({ req }) => {
+    const dispatch = store.dispatch as NextThunkDispatch
+    await dispatch(await fetchTracks())
+})
