@@ -9,7 +9,7 @@ const steps = ['Информация о треке', 'Загрузите обл�
 
 const StepDownloaing: React.FC<StepDownloadingProps> = ({activeStep, children}) => {
     return (
-        <div className='w-300'>
+        <div className='flex flex-col items-center'>
             <div>
                 <ul className='bg-white text-center list-none flex justify-center mb-24'>
                     {steps.map((step, index) => (
@@ -24,10 +24,8 @@ const StepDownloaing: React.FC<StepDownloadingProps> = ({activeStep, children}) 
                     ))}
                 </ul>
             </div>
-            <div className='container justify-center my-70 h-270'>
-                <div className='w-600 shadow-[0_2px_7px_-2px_rgb(0,0,0,0.3)]'>
-                    {children}
-                </div>
+            <div className='flex flex-col items-center w-2/3 my-70 px-10 py-4 shadow-[0_2px_7px_-2px_rgb(0,0,0,0.3)]'>
+                {children}
             </div>
         </div>
     )

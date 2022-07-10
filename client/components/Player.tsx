@@ -6,16 +6,16 @@ import VolumeIcon from './icons/VolumeIcon'
 import PlayerVolume from './PlayerVolume'
 import { useTypedSelector } from './../hooks/useTypedSelector'
 import { useActions } from './../hooks/useActions'
-import { ITrack } from '../types/track'
 
 let audio;
 
 const Player = () => {
     const { pause, volume, active, duration, currentTime } = useTypedSelector(state => state.player)
+    const { tracks } = useTypedSelector(state => state.track)
     const { pauseTrack, playTrack, setVolume, setCurrentTime, setDuration, setActiveTrack } = useActions()
-
+    
     useEffect(() => {
-        if (!audio) {
+        if (!audio) {       
             audio = new Audio()
             setAudio()
             play()
@@ -43,13 +43,21 @@ const Player = () => {
             audio.ontimeupdate = () => {
                 setCurrentTime(Math.ceil(audio.currentTime))
             }
+
+            audio.onended = () => {
+                const index = tracks.findIndex(track => track._id === active._id)
+                const nextTrack = tracks[index + 1] ? tracks[index + 1] : tracks[0]
+                
+                setActiveTrack(nextTrack)
+                pauseTrack()
+            }
         }
     }
 
     const play = () => {
         if (pause) {
             playTrack()
-        } else {
+        } else { 
             pauseTrack()
         }
     }

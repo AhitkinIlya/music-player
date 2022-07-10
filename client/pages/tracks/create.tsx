@@ -10,6 +10,8 @@ const create = () => {
     const [ activeStep, setActiveStep ] = useState(0)
     const [ picture, setPicture] = useState(null)
     const [ audio, setAudio] = useState(null)
+    const [ prevImg, setPrevImg ] = useState(null)
+    const [ prevAudio, setPrevAudio ] = useState(null)
     const nameTrack = useInput('')
     const nameArtist = useInput('')
     const textTrack = useInput('')
@@ -32,6 +34,26 @@ const create = () => {
         }
     }
 
+    const pickImg = (data) => {
+        var reader  = new FileReader();
+
+        reader.onload = (e) => {
+            setPrevImg(e.target.result)
+        }
+      
+        reader.readAsDataURL(data);
+        setPicture(data)
+    }
+
+    const pickAudio = (data) => {
+        const array = data.name.split('.')
+        setPrevAudio({
+            name: array[0],
+            format: array[1]
+        })
+        setAudio(data)
+    }
+
     const back = () => {
         setActiveStep(prev => prev - 1)
     }
@@ -40,7 +62,7 @@ const create = () => {
        <MainLayout>
            <StepDownloaing activeStep={activeStep}>
                 {activeStep === 0 &&
-                    <div className='flex-col p-10'>
+                    <div className='flex-col w-full'>
                         <div className='mt-5'>
                             <label htmlFor="nameTrack" className="block text-sm font-medium text-gray-700">Назвине трека</label>
                             <div className="mt-1 relative rounded-md border-lime-700">
@@ -77,20 +99,39 @@ const create = () => {
                     </div>
                 }
                 {activeStep === 1 &&
-                    <FileUpload setFile={setPicture} accept='image/*'>
-                        <button>Загрузить обложку</button>
-                    </FileUpload>
+                    <>
+                        {!prevImg ?
+                            <FileUpload setFile={pickImg} accept='image/*'>
+                                <button className='bg-green-500 text-white px-3 py-3 rounded text font-medium cursor-pointer'>Загрузить обложку</button>
+                            </FileUpload> : 
+                            <img src={prevImg} className="border border-black rounded w-2/5 object-center object-cover" />
+                        }
+                    </>
                 }
                 {activeStep === 2 &&
-                    <FileUpload setFile={setAudio} accept='audio/*'>
-                        <button>Загрузить аудио</button>
-                    </FileUpload>
+                    <>
+                        {!prevAudio ? 
+                            <FileUpload setFile={pickAudio} accept='audio/*'>
+                                <button className='bg-green-500 text-white px-3 py-3 rounded text font-medium cursor-pointer'>Загрузить аудио</button>
+                            </FileUpload> :
+                            <div className="flex flex-col border border-black bg-gray-500 rounded w-6/12 py-24 px-4">
+                                <div className='text-white'>
+                                    <span className='font-semibold text-lg'>Название: </span>
+                                    <span>{prevAudio.name}</span>
+                                </div>
+                                <div className='text-white'>
+                                    <span className='font-semibold text-lg'>Формат: </span>
+                                    <span>{prevAudio.format}</span>
+                                </div>
+                            </div>
+                        }
+                    </>
                 }
+                <div className='justify-between flex mt-10 w-full'>
+                    <button className='bg-sky-500 text-white px-3 py-2 rounded text font-medium cursor-pointer' disabled={activeStep === 0} onClick={back}>Назад</button>
+                    <button className='bg-sky-500 text-white px-3 py-2 rounded text font-medium cursor-pointer' onClick={next}>Далее</button>
+                </div>
            </StepDownloaing>
-           <div className='justify-between flex mt-10 w-2/4'>
-               <button className='bg-sky-500 text-white px-3 py-2 rounded text font-medium cursor-pointer' disabled={activeStep === 0} onClick={back}>Назад</button>
-               <button className='bg-sky-500 text-white px-3 py-2 rounded text font-medium cursor-pointer' onClick={next}>Далее</button>
-           </div>
        </MainLayout>
     )
 }

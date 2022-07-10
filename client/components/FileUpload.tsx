@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 
 interface FileUploadProps {
     setFile: Function;
@@ -8,12 +8,12 @@ interface FileUploadProps {
 const FileUpload: React.FC<FileUploadProps> = ({setFile, accept, children}) => {
     const ref = useRef<HTMLInputElement>()
 
-    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => { 
         setFile(e.target.files[0])
     }
-
+    
     return (
-        <div onClick={() => ref.current.click()}>
+        <div className='flex justify-center m-auto' onClick={() => ref.current.click()}>
             <input 
                 type='file'
                 accept={accept}

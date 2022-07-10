@@ -1,5 +1,4 @@
 import React from 'react'
-import { connect } from "react-redux"
 import { ITrack } from '../types/track'
 import PauseIcon from './icons/PauseIcon'
 import PlayIcon from './icons/PlayIcon'
@@ -14,8 +13,6 @@ interface TrackItemProps {
 }
 
 const TrackItem: React.FC<TrackItemProps> = ({track}) => {
-    console.log('track', track);
-    
     const router = useRouter()
     const { playTrack, pauseTrack, setActiveTrack, deleteTrack } = useActions()
     const { pause, active } = useTypedSelector(state => state.player)
@@ -53,8 +50,8 @@ const TrackItem: React.FC<TrackItemProps> = ({track}) => {
                     : <PlayIcon />
                 }
             </div>
-            <img width={70} height={70} src={'http://localhost:5000/' +track.picture} />
-            <div className='container flex flex-col w-200'>
+            <img className='ml-2' width={70} height={70} src={'http://localhost:5000/' +track.picture} />
+            <div className='container flex flex-col w-200 ml-3'>
                 <div>{track.name}</div>
                 <div className='text-xs text-gray-500'>{track.artist}</div>
             </div>
